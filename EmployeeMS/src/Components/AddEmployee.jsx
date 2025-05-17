@@ -29,26 +29,36 @@ export const AddEmployee = () => {
   }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const formData = new FormData();
-    formData.append('name', employee.name);
-    formData.append('email', employee.email);
-    formData.append('password', employee.password);
-    formData.append('salary', employee.salary);
-    formData.append('address', employee.address);
-    formData.append('category_id', employee.category_id);
-    formData.append('image', employee.image);
+    e.preventDefault();
 
-    axios.post('http://localhost:3000/auth/add_employee', formData)
-    .then(result => {
-        if (result.data.Status) {
-            navigate("/dashboard/employee");
-          } else {
-            alert(result.data.Error);
-          }
-    })
-    .catch(err => console.log(err))
-  }
+    if (!employee.category_id) {
+      alert("Please select a category.");
+      return;
+    }
+
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", employee.name);
+    formData.append("email", employee.email);
+    formData.append("password", employee.password);
+    formData.append("salary", employee.salary);
+    formData.append("address", employee.address);
+    formData.append("category_id", employee.category_id);
+    formData.append("image", employee.image);
+
+    axios
+      .post("http://localhost:3000/auth/add_employee", formData)
+      .then((result) => {
+        if (result.data.Message) {
+          `1`;
+          alert("Employe succeesfully added!");
+          navigate("/dashboard/employee");
+        } else {
+          alert(result.data.Error);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center mt-3">
@@ -56,7 +66,7 @@ export const AddEmployee = () => {
         <h3 className="text-center">Add Employee</h3>
         <form className="row g-1" onSubmit={handleSubmit}>
           <div className="col-12">
-            <label for="inputName" className="form-label">
+            <label htmlFor="inputName" className="form-label">
               Name
             </label>
             <input
@@ -70,7 +80,7 @@ export const AddEmployee = () => {
             />
           </div>
           <div className="col-12">
-            <label for="inputEmail4" className="form-label">
+            <label htmlFor="inputEmail4" className="form-label">
               Email
             </label>
             <input
@@ -85,7 +95,7 @@ export const AddEmployee = () => {
             />
           </div>
           <div className="col-12">
-            <label for="inputPassword4" className="form-label">
+            <label htmlFor="inputPassword4" className="form-label">
               Password
             </label>
             <input
@@ -97,7 +107,7 @@ export const AddEmployee = () => {
                 setEmployee({ ...employee, password: e.target.value })
               }
             />
-            <label for="inputSalary" className="form-label">
+            <label htmlFor="inputSalary" className="form-label">
               Salary
             </label>
             <input
@@ -112,7 +122,7 @@ export const AddEmployee = () => {
             />
           </div>
           <div className="col-12">
-            <label for="inputAddress" className="form-label">
+            <label htmlFor="inputAddress" className="form-label">
               Address
             </label>
             <input
@@ -127,7 +137,7 @@ export const AddEmployee = () => {
             />
           </div>
           <div className="col-12">
-            <label for="category" className="form-label">
+            <label htmlFor="category" className="form-label">
               Category
             </label>
             <select
@@ -144,7 +154,7 @@ export const AddEmployee = () => {
             </select>
           </div>
           <div className="col-12 mb-3">
-            <label className="form-label" for="inputGroupFile01">
+            <label className="form-label" htmlFor="inputGroupFile01">
               Select Image
             </label>
             <input
@@ -152,7 +162,9 @@ export const AddEmployee = () => {
               className="form-control rounded-0"
               id="inputGroupFile01"
               name="image"
-              onChange={(e) => setEmployee({ ...employee, image: e.target.files[0] })}
+              onChange={(e) =>
+                setEmployee({ ...employee, image: e.target.files[0] })
+              }
             />
           </div>
           <div className="col-12">

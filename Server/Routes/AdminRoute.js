@@ -55,13 +55,15 @@ const upload = multer({
     storage: storage
 })
 
-router.post("/add_employee",upload.single('image'), (req, res) => {
+router.post("/add_employee", upload.single('image'), (req, res) => {
   const sql =
     "INSERT INTO employee \
     (`name`, `email`, `password`, `address`, `salary`, `image`, `category_id`) \
-    VALUES (?)";
+    VALUES (?, ?, ?, ?, ?, ?, ?)";
+
   bcrypt.hash(req.body.password.toString(), 10, (err, hash) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" });
+    if (err) return res.json({ Status: false, Error: "Hashing Error" });
+
     const values = [
       req.body.name,
       req.body.email,
@@ -71,12 +73,19 @@ router.post("/add_employee",upload.single('image'), (req, res) => {
       req.file.filename,
       req.body.category_id,
     ];
-    con.query(sql, [values], (err, result) => {
-      if (err) return res.json({ Status: false, Error: err });
-      return res.json({ Status: true });
+
+    console.log("values to insert:", values);
+
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("SQL Error:", err);
+        return res.json({ Status: false, Error: err });
+      }
+      return res.json({ Status: true, Message: "Employee added successfully" });
     });
   });
 });
+
 
 router.get("/employee", (req, res) => {
     const sql = "SELECT * FROM employee";
